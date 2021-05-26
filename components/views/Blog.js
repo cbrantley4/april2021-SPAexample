@@ -6,7 +6,7 @@ export default st => html`
       .map(post => {
         return formatBlogPost(post);
       })
-      .join()}
+      .join("")}
   </section>
 `;
 
