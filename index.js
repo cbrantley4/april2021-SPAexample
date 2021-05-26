@@ -3,13 +3,14 @@ import * as state from "./store";
 
 import Navigo from "navigo";
 import { capitalize } from "lodash";
+import axios from "axios";
 
 const router = new Navigo(window.location.origin);
 
 router
   .on({
-    ":page": (params) => render(state[capitalize(params.page)]),
-    "/": () => render(state.Home),
+    ":page": params => render(state[capitalize(params.page)]),
+    "/": () => render(state.Home)
   })
   .resolve();
 
@@ -28,8 +29,8 @@ function render(st = state.Home) {
 
 function addEventListeners(st) {
   // add event listeners to Nav items for navigation
-  document.querySelectorAll("nav a").forEach((navLink) =>
-    navLink.addEventListener("click", (event) => {
+  document.querySelectorAll("nav a").forEach(navLink =>
+    navLink.addEventListener("click", event => {
       event.preventDefault();
       render(state[event.target.title]);
     })
@@ -44,7 +45,7 @@ function addEventListeners(st) {
 
   // event listener for the the photo form
   if (st.view === "Form") {
-    document.querySelector("form").addEventListener("submit", (event) => {
+    document.querySelector("form").addEventListener("submit", event => {
       event.preventDefault();
       // convert HTML elements to Array
       let inputList = Array.from(event.target.elements);
@@ -61,3 +62,14 @@ function addEventListeners(st) {
     });
   }
 }
+
+axios
+  .get("https://jsonplaceholder.typicode.com/posts")
+  // handle the response from the API
+  .then(response => {
+    // for each post in the response Array,
+    response.data.forEach(post => {
+      // add it to state.Blog.posts
+      state.Blog.posts.push(post);
+    });
+  });
